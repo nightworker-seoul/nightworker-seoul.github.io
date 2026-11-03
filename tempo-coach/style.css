@@ -1,0 +1,6 @@
+body{margin:0;background:#0f1412;color:#eef2ee;font:16px/1.7 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif}
+main{max-width:720px;margin:0 auto;padding:48px 24px 80px}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:19px;margin:36px 0 8px;color:#d9f26b}
+.muted{color:#93a39a;font-size:14px}a{color:#d9f26b}
+header{display:flex;gap:16px;align-items:center;margin-bottom:28px}header img{width:64px;height:64px;border-radius:15px}
+ul{padding-left:20px}
