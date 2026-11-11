@@ -1,0 +1,10 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["Q66CPGMQJW.io.github.nightworkerseoul.tempocoach"],
+        "components": [{ "/": "/tempo-coach/r/*", "comment": "shared routines" }]
+      }
+    ]
+  }
+}

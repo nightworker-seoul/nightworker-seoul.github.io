@@ -1,0 +1,37 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>이어피티 루틴</title><meta property="og:title" content="이어피티 루틴을 받았어요"><meta property="og:description" content="눌러서 이어피티 앱으로 가져가세요.">
+<meta property="og:image" content="https://nightworker-seoul.github.io/tempo-coach/icon.png">
+<link rel="stylesheet" href="../style.css">
+<style>.day{margin:18px 0}.day h3{margin:0 0 6px}.ex{display:flex;justify-content:space-between;padding:3px 0}.btn{display:block;text-align:center;padding:14px;border-radius:14px;margin:10px 0;text-decoration:none;font-weight:700}.primary{background:#d9f26b;color:#111}.ghost{border:1px solid currentColor}</style>
+</head><body><main>
+<header><img src="../icon.png" alt=""><div><h1 id="name">이어피티 루틴</h1><div class="muted" id="sub">이어폰으로 듣는 헬스 루틴</div></div></header>
+<a class="btn primary" id="open" href="#">이어피티 앱에서 열기</a>
+<a class="btn ghost" href="https://apps.apple.com/kr/app/id6829674327">앱이 없다면 App Store에서 받기</a>
+<div id="days"></div>
+<p class="muted">무게와 기록은 담기지 않아요. 운동, 세트와 횟수, 1RM %, 템포만 담겨요.</p>
+</main>
+<script>
+// format: "1" + base64url(raw deflate(JSON)); keep in step with RoutineShare.swift
+const NAMES = {"chest-press": "체스트 프레스 머신", "incline-chest-press": "인클라인 체스트 프레스 머신", "pec-deck": "펙덱 플라이 머신", "cable-crossover": "케이블 크로스오버", "bench-press": "벤치프레스", "smith-machine": "스미스 머신", "dip-station": "딥스 스테이션", "lat-pulldown": "랫풀다운", "seated-cable-row": "시티드 케이블 로우", "seated-row": "시티드 로우 머신", "t-bar-row": "티바 로우", "assisted-chin": "어시스트 친업 머신", "pull-up-bar": "풀업 바", "back-extension": "백 익스텐션 머신", "roman-chair": "45도 백 익스텐션", "reverse-fly": "리어 델트 머신", "shoulder-press": "숄더 프레스 머신", "lateral-raise": "래터럴 레이즈 머신", "dumbbell": "덤벨", "biceps-curl": "바이셉스 컬 머신", "preacher-bench": "프리처 컬 벤치", "triceps-extension": "트라이셉스 익스텐션 머신", "seated-dip": "시티드 딥 머신", "cable-station": "케이블 머신", "leg-press": "레그 프레스", "hack-squat": "핵 스쿼트", "pendulum-squat": "펜듈럼 스쿼트", "leg-extension": "레그 익스텐션", "lying-leg-curl": "라잉 레그 컬", "seated-leg-curl": "시티드 레그 컬", "hip-abduction": "힙 어브덕션", "hip-adduction": "힙 어덕션", "glute-drive": "힙 쓰러스트 머신", "standing-calf": "스탠딩 카프 레이즈", "seated-calf": "시티드 카프 레이즈", "power-rack": "파워랙", "barbell": "바벨", "kettlebell": "케틀벨", "ab-crunch": "복근 크런치 머신", "captains-chair": "캡틴스 체어", "decline-bench": "디클라인 벤치", "rotary-torso": "로터리 토르소", "adjustable-bench": "조절식 벤치", "treadmill": "트레드밀", "stair-climber": "천국의 계단", "exercise-bike": "실내 자전거", "elliptical": "일립티컬", "rowing-machine": "로잉 머신", "foam-roller": "폼롤러", "mat": "매트"}; // from Equipment.swift
+(async () => {
+  const code = location.hash.slice(1);
+  const open = document.getElementById('open');
+  open.href = 'earpt://routine?d=' + encodeURIComponent(code);
+  try {
+    if (code[0] !== '1') throw 0;
+    let b = code.slice(1).replace(/-/g, '+').replace(/_/g, '/'); while (b.length % 4) b += '=';
+    const bytes = Uint8Array.from(atob(b), c => c.charCodeAt(0));
+    const text = await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
+    const w = JSON.parse(text);
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    document.getElementById('name').textContent = w.n;
+    document.title = w.n + ' · 이어피티';
+    document.getElementById('sub').textContent = '주 ' + w.d.length + '회 루틴';
+    document.getElementById('days').innerHTML = w.d.map(d =>
+      '<div class="day"><h3>' + esc(d.t) + '</h3>' + d.e.map(e =>
+        '<div class="ex"><span>' + esc(e.n || NAMES[e.i] || e.i) + '</span><span class="muted">' + (e.r || 6) + '회 × ' + e.s + '세트' + (e.q ? ' · 1RM ' + e.q + '%' : '') + '</span></div>').join('') + '</div>').join('');
+  } catch (e) {
+    document.getElementById('sub').textContent = '링크가 잘렸어요. 보낸 사람에게 다시 받아 주세요.';
+  }
+})();
+</script></body></html>
